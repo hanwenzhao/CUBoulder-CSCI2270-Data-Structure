@@ -1,0 +1,114 @@
+//CSCI 2270
+//Hanwen Zhao
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cstring>
+#include <algorithm>
+#include <cctype>
+#include <stdlib.h>
+#include "CommunicationNetwork.h"
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+    int input;
+    CommunicationNetwork cn1(NULL,NULL);
+    ifstream readFile;
+    string line;
+    while (input != 7)
+    {
+        cout << "======Main Menu======" << endl;
+        cout << "1. Build Network" << endl;
+        cout << "2. Print Network Path" << endl;
+        cout << "3. Transmit Message Coast-To-Coast-To-Coast" << endl;
+        cout << "4. Add City" << endl;
+        cout << "5. Delete City" << endl;
+        cout << "6. Clear Network" << endl;
+        cout << "7. Quit" << endl;
+
+        cin >> input;
+        if (input == 1)
+        {
+            cn1.buildNetwork();
+        }
+        if (input == 2)
+        {
+
+            cn1.printNetwork();
+        }
+        if (input == 3)
+        {
+            readFile.open(argv[1]);
+            //readFile.open("messageIn.txt");
+            if (readFile.fail())
+            {
+                cout<<"Input file opening fail."<<endl;
+            }
+            else
+            {
+                while(!readFile.eof())
+                {
+                    getline(readFile, line, ' ');
+                    //line.erase(remove_if(line.begin(), line.end(), ::ispunct), line.end());
+                    line.erase(remove_if(line.begin(), line.end(), (int(*)(int))isspace), line.end());
+                    char * mesg = new char [line.length()+1];
+                    strcpy (mesg, line.c_str());
+                    cn1.transmitMsg(mesg);
+
+                }
+            }
+            readFile.close();
+        }
+        if (input == 4)
+        {
+            string cityNew;
+            string cityPrevious;
+            cout <<	"Enter a city name: " << endl;
+            //cin >> cityNew;
+            while(true)
+            {
+                getline(cin, cityNew);
+                if (cityNew != "")
+                {
+                    break;
+                }
+            }
+            //cout << "New city name is: " << cityNew <<endl;
+            cout << "Enter a previous city name: " << endl;
+            //cin >> cityPrevious;
+            while(true)
+            {
+                getline(cin, cityPrevious);
+                if (cityPrevious != "")
+                {
+                    break;
+                }
+            }
+            cn1.addCity(cityNew, cityPrevious);
+        }
+        if (input == 5)
+        {
+            string cityDel;
+            cout <<	"Enter a city name: " << endl;
+            while(true)
+            {
+                getline(cin, cityDel);
+                if (cityDel != "")
+                {
+                    break;
+                }
+            }
+            cn1.deleteCity(cityDel);
+        }
+        if (input == 6)
+        {
+            cn1.deleteNetwork();
+        }
+    }
+
+    cout << "Goodbye!" << endl;
+    //exit(0);
+    return 0;
+}
